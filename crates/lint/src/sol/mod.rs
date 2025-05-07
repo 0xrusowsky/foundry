@@ -11,8 +11,14 @@ use foundry_compilers::solc::SolcLanguage;
 use foundry_config::lint::Severity;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use solar_ast::{visit::Visit, Arena};
-use solar_interface::{diagnostics, Session};
-use std::path::{Path, PathBuf};
+use solar_interface::{
+    diagnostics::{self, DiagCtxt, JsonEmitter},
+    Session, SourceMap,
+};
+use std::{
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 use thiserror::Error;
 
 /// Linter implementation to analyze Solidity source code responsible for identifying
@@ -23,11 +29,19 @@ pub struct SolidityLinter {
     lints_included: Option<Vec<SolLint>>,
     lints_excluded: Option<Vec<SolLint>>,
     with_description: bool,
+    with_json_emitter: bool,
 }
 
 impl SolidityLinter {
     pub fn new() -> Self {
-        Self { severity: None, lints_included: None, lints_excluded: None, with_description: true }
+        Self {
+            severity: None,
+            lints_included: None,
+            lints_excluded: None,
+            with_description: true,
+            // TODO: set to false by default
+            with_json_emitter: true,
+        }
     }
 
     pub fn with_severity(mut self, severity: Option<Vec<Severity>>) -> Self {
@@ -50,6 +64,7 @@ impl SolidityLinter {
         self
     }
 
+    // TODO: delete after the ui test runner works
     #[cfg(test)]
     /// Helper function to ease testing, despite `fn lint` being the public API for the `Linter`.
     /// Logs the diagnostics to the local buffer, so that tests can perform assertions.
@@ -61,6 +76,11 @@ impl SolidityLinter {
         self.process_file(&sess, file);
 
         sess.emitted_diagnostics()
+    }
+
+    pub fn with_json_emitter(mut self, with: bool) -> Self {
+        self.with_json_emitter = with;
+        self
     }
 
     fn process_file(&self, sess: &Session, file: &Path) {
@@ -118,8 +138,23 @@ impl Linter for SolidityLinter {
     type Lint = SolLint;
 
     fn lint(&self, input: &[PathBuf]) {
+        let mut builder = Session::builder();
+        let map = Arc::<SourceMap>::default();
+
+        // Build session based on the linter config
+        if self.with_json_emitter {
+            let json_emitter = JsonEmitter::new(Box::new(std::io::stderr()), map.clone())
+                .rustc_like(true)
+                .ui_testing(false);
+            let dcx = DiagCtxt::new(Box::new(json_emitter));
+
+            builder = builder.dcx(dcx);
+        } else {
+            builder = builder.with_stderr_emitter();
+        };
+
         // Create a single session for all files
-        let mut sess = Session::builder().with_stderr_emitter().build();
+        let mut sess = builder.source_map(map.clone()).build();
         sess.dcx = sess.dcx.set_flags(|flags| flags.track_diagnostics = false);
 
         // Process the files in parallel

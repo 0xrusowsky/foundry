@@ -1,10 +1,10 @@
 contract AsmKeccak256 {
     constructor(uint256 a, uint256 b) {
-        keccak256(abi.encodePacked(a, b));
+        keccak256(abi.encodePacked(a, b)); //~NOTE: asm-keccak256
     }
 
     function solidityHash(uint256 a, uint256 b) public view {
-        keccak256(abi.encodePacked(a, b));
+        keccak256(abi.encodePacked(a, b)); //~NOTE: asm-keccak256
     }
 
     function assemblyHash(uint256 a, uint256 b) public view {

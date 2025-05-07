@@ -18,14 +18,14 @@ contract IncorrectShift {
         // - Literal << NonLiteral
         // - Literal >> NonLiteral
 
-        result = 2 << stateValue;
-        result = 8 >> localValue;
-        result = 16 << (stateValue + 1);
-        result = 32 >> getAmount();
-        result = 1 << (localValue > 10 ? localShiftAmount : stateShiftAmount);
+        result = 2 << stateValue; //~WARN: incorrect-shift
+        result = 8 >> localValue; //~WARN: incorrect-shift
+        result = 16 << (stateValue + 1); //~WARN: incorrect-shift
+        result = 32 >> getAmount(); //~WARN: incorrect-shift
+        result = 1 << (localValue > 10 ? localShiftAmount : stateShiftAmount); //~WARN: incorrect-shift
 
         // SHOULD PASS:
-        result = stateValue << 2; 
+        result = stateValue << 2;
         result = localValue >> 3;
         result = stateValue << localShiftAmount;
         result = localValue >> stateShiftAmount;
