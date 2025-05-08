@@ -1,12 +1,17 @@
-use std::{path::Path, process::Command};
+use std::path::Path;
 use ui_test::spanned::Spanned;
 
-/// test runner based on `ui_test` and adapted from `https://github.com/paradigmxyz/solar/tools/tester`
-pub fn run_tests<'a>(cmd: &'a Path, testdata: &'a Path) -> eyre::Result<()> {
+/// Test runner based on `ui_test`. Adapted from `https://github.com/paradigmxyz/solar/tools/tester`.
+pub fn run_tests<'a>(
+    cmd: &str,
+    cmd_path: &'a Path,
+    testdata: &'a Path,
+    bless: bool,
+) -> eyre::Result<()> {
     ui_test::color_eyre::install()?;
 
     let mut args = ui_test::Args::test()?;
-    args.bless = true;
+    args.bless = bless;
 
     // Fast path for `--list`, invoked by `cargo-nextest`.
     {
@@ -23,37 +28,7 @@ pub fn run_tests<'a>(cmd: &'a Path, testdata: &'a Path) -> eyre::Result<()> {
         args.format = ui_test::Format::Terse;
     }
 
-    // DEBUG: start
-    println!("Attempting to use forge executable at: {}", cmd.display());
-    if cmd.exists() {
-        println!("Forge executable exists.");
-        let version_output = Command::new(&cmd).arg("--version").output();
-        match version_output {
-            Ok(output) => {
-                println!("Forge --version stdout: {}", String::from_utf8_lossy(&output.stdout));
-                println!("Forge --version stderr: {}", String::from_utf8_lossy(&output.stderr));
-                println!("Forge --version status: {}", output.status);
-                if !output.status.success() {
-                    println!("WARNING: Running 'forge --version' manually failed!");
-                }
-            }
-            Err(e) => {
-                println!("ERROR running 'forge --version' manually: {}", e);
-            }
-        }
-    } else {
-        println!("ERROR: Forge executable does NOT exist at the path from build script!");
-    }
-    // DEBUG: end
-
-    let config = config(testdata, cmd, &args);
-
-    // DEBIG: start
-    println!("ui_test root_dir: {}", config.root_dir.display());
-    println!("ui_test out_dir: {}", config.out_dir.display());
-    println!("ui_test program path: {}", config.program.program.display());
-    println!("ui_test program args: {:?}", config.program.args);
-    // DEBUG: end
+    let config = config(cmd, cmd_path, &args, testdata);
 
     let text_emitter = match args.format {
         ui_test::Format::Terse => ui_test::status_emitter::Text::quiet(),
@@ -73,7 +48,12 @@ pub fn run_tests<'a>(cmd: &'a Path, testdata: &'a Path) -> eyre::Result<()> {
     Ok(())
 }
 
-fn config<'a>(testdata: &'a Path, cmd: &'a Path, args: &ui_test::Args) -> ui_test::Config {
+fn config<'a>(
+    cmd: &str,
+    cmd_path: &'a Path,
+    args: &ui_test::Args,
+    testdata: &'a Path,
+) -> ui_test::Config {
     let root = testdata.parent().unwrap();
     assert!(
         testdata.exists(),
@@ -87,9 +67,9 @@ fn config<'a>(testdata: &'a Path, cmd: &'a Path, args: &ui_test::Args) -> ui_tes
         target: None,
         root_dir: testdata.into(),
         program: ui_test::CommandBuilder {
-            program: cmd.into(),
+            program: cmd_path.into(),
             args: {
-                let args = vec!["lint"];
+                let args = vec![cmd, "--json"];
                 args.into_iter().map(Into::into).collect()
             },
             out_dir_flag: None,

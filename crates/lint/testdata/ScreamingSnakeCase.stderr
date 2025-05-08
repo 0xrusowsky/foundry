@@ -1,63 +1,60 @@
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
-  --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
-   |
-13 |     uint256 constant screamingSnakeCase = 0;
-   |     ----------------------------------------
-   |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
+note[screaming-snake-case-const]: constants should use SCREAMING_SNAKE_CASE
+ --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
+  |
+9 |     uint256 constant screamingSnakeCase = 0;
+  |                      ------------------
+  |
+  = help: https://docs.soliditylang.org/en/latest/style-guide.html#constants
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-const]: constants should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-14 |     uint256 constant screaming_snake_case = 0;
-   |     ------------------------------------------
+10 |     uint256 constant screaming_snake_case = 0;
+   |                      --------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
+   = help: https://docs.soliditylang.org/en/latest/style-guide.html#constants
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-const]: constants should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-15 |     uint256 constant ScreamingSnakeCase = 0;
-   |     ----------------------------------------
+11 |     uint256 constant ScreamingSnakeCase = 0;
+   |                      ------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
+   = help: https://docs.soliditylang.org/en/latest/style-guide.html#constants
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-const]: constants should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-16 |     uint256 constant SCREAMING_snake_case = 0;
-   |     ------------------------------------------
+12 |     uint256 constant SCREAMING_snake_case = 0;
+   |                      --------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
+   = help: https://docs.soliditylang.org/en/latest/style-guide.html#constants
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-17 |     uint256 immutable screamingSnakeCase0 = 0;
-   |     ------------------------------------------
+19 |     uint256 immutable screamingSnakeCase0 = 0;
+   |                       -------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-18 |     uint256 immutable screaming_snake_case0 = 0;
-   |     --------------------------------------------
+20 |     uint256 immutable screaming_snake_case0 = 0;
+   |                       ---------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-19 |     uint256 immutable ScreamingSnakeCase0 = 0;
-   |     ------------------------------------------
+21 |     uint256 immutable ScreamingSnakeCase0 = 0;
+   |                       -------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
 
-note[screaming-snake-case]: constants and immutables should use SCREAMING_SNAKE_CASE
+note[screaming-snake-case-immutable]: immutables should use SCREAMING_SNAKE_CASE
   --> ROOT/testdata/ScreamingSnakeCase.sol:LL:CC
    |
-20 |     uint256 immutable SCREAMING_snake_case_0 = 0;
-   |     ---------------------------------------------
+22 |     uint256 immutable SCREAMING_snake_case_0 = 0;
+   |                       ----------------------
    |
-   = help: https://docs.soliditylang.org/en/latest/style-guide.html#contract-and-library-names
+

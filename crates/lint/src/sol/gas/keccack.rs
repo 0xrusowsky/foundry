@@ -27,25 +27,3 @@ impl<'ast> EarlyLintPass<'ast> for AsmKeccak256 {
         }
     }
 }
-
-#[cfg(test)]
-mod test {
-    use std::path::Path;
-
-    use super::*;
-    use crate::{linter::Lint, sol::SolidityLinter};
-
-    #[test]
-    fn test_keccak256() -> eyre::Result<()> {
-        let linter = SolidityLinter::new().with_lints(Some(vec![ASM_KECCAK256]));
-
-        let emitted = linter.lint_test(Path::new("testdata/Keccak256.sol")).unwrap().to_string();
-        let warnings = emitted.matches(&format!("warning[{}]", ASM_KECCAK256.id())).count();
-        let notes = emitted.matches(&format!("note[{}]", ASM_KECCAK256.id())).count();
-
-        assert_eq!(warnings, 0, "Expected 0 warnings");
-        assert_eq!(notes, 2, "Expected 2 notes");
-
-        Ok(())
-    }
-}

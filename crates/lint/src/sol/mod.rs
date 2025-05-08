@@ -39,8 +39,7 @@ impl SolidityLinter {
             lints_included: None,
             lints_excluded: None,
             with_description: true,
-            // TODO: set to false by default
-            with_json_emitter: true,
+            with_json_emitter: false,
         }
     }
 
@@ -62,20 +61,6 @@ impl SolidityLinter {
     pub fn with_description(mut self, with: bool) -> Self {
         self.with_description = with;
         self
-    }
-
-    // TODO: delete after the ui test runner works
-    #[cfg(test)]
-    /// Helper function to ease testing, despite `fn lint` being the public API for the `Linter`.
-    /// Logs the diagnostics to the local buffer, so that tests can perform assertions.
-    pub(crate) fn lint_test(&self, file: &Path) -> Option<diagnostics::EmittedDiagnostics> {
-        let mut sess =
-            Session::builder().with_buffer_emitter(solar_interface::ColorChoice::Never).build();
-        sess.dcx = sess.dcx.set_flags(|flags| flags.track_diagnostics = false);
-
-        self.process_file(&sess, file);
-
-        sess.emitted_diagnostics()
     }
 
     pub fn with_json_emitter(mut self, with: bool) -> Self {
@@ -139,22 +124,21 @@ impl Linter for SolidityLinter {
 
     fn lint(&self, input: &[PathBuf]) {
         let mut builder = Session::builder();
-        let map = Arc::<SourceMap>::default();
 
         // Build session based on the linter config
         if self.with_json_emitter {
+            let map = Arc::<SourceMap>::default();
             let json_emitter = JsonEmitter::new(Box::new(std::io::stderr()), map.clone())
                 .rustc_like(true)
                 .ui_testing(false);
-            let dcx = DiagCtxt::new(Box::new(json_emitter));
 
-            builder = builder.dcx(dcx);
+            builder = builder.dcx(DiagCtxt::new(Box::new(json_emitter))).source_map(map);
         } else {
             builder = builder.with_stderr_emitter();
         };
 
         // Create a single session for all files
-        let mut sess = builder.source_map(map.clone()).build();
+        let mut sess = builder.build();
         sess.dcx = sess.dcx.set_flags(|flags| flags.track_diagnostics = false);
 
         // Process the files in parallel

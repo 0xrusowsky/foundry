@@ -1,4 +1,4 @@
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 13 |     struct _PascalCase {
@@ -6,7 +6,7 @@ note[struct-pascal-case]: structs should use PascalCase.
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
 
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 17 |     struct pascalCase {
@@ -14,7 +14,7 @@ note[struct-pascal-case]: structs should use PascalCase.
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
 
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 21 |     struct pascalcase {
@@ -22,7 +22,7 @@ note[struct-pascal-case]: structs should use PascalCase.
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
 
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 25 |     struct pascal_case {
@@ -30,7 +30,7 @@ note[struct-pascal-case]: structs should use PascalCase.
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
 
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 29 |     struct PASCAL_CASE {
@@ -38,10 +38,11 @@ note[struct-pascal-case]: structs should use PascalCase.
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
 
-note[struct-pascal-case]: structs should use PascalCase.
+note[pascal-case-struct]: structs should use PascalCase
   --> ROOT/testdata/StructPascalCase.sol:LL:CC
    |
 33 |     struct PASCALCASE {
    |            ----------
    |
    = help: https://docs.soliditylang.org/en/latest/style-guide.html#struct-names
+
