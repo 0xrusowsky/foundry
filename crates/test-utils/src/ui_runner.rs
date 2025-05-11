@@ -96,13 +96,20 @@ fn config<'a>(
     config.comment_defaults.base().require_annotations_for_level =
         Spanned::dummy(ui_test::diagnostics::Level::Warn).into();
 
+    // normalize windows paths
+    let root_str = root.to_string_lossy().into_owned();
+    #[cfg(windows)]
+    {
+        root_str = root_str.replace('\\', "/");
+    }
+
     let filters = [
         (ui_test::Match::PathBackslash, b"/".to_vec()),
         #[cfg(windows)]
         (ui_test::Match::Exact(vec![b'\r']), b"".to_vec()),
         #[cfg(windows)]
         (ui_test::Match::Exact(br"\\?\".to_vec()), b"".to_vec()),
-        (root.into(), b"ROOT".to_vec()),
+        (ui_test::Match::Exact(root_str.into()), b"ROOT".to_vec()),
     ];
     config.comment_defaults.base().normalize_stderr.extend(filters.iter().cloned());
     config.comment_defaults.base().normalize_stdout.extend(filters);
