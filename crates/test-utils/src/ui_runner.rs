@@ -97,8 +97,10 @@ fn config<'a>(
         Spanned::dummy(ui_test::diagnostics::Level::Warn).into();
 
     // DEBUG
-    let root_str = root.to_string_lossy().replace('\\', "/");
-    println!("[DEBUG] ui_test_config: Using ROOT pattern string: '{}'", root_str);
+    let root_str = root.to_string_lossy();
+    println!("[DEBUG - ui_test] Raw ROOT: '{}'", root_str);
+    let root_str = root_str.replace('\\', "/");
+    println!("[DEBUG - ui_test] Normalized ROOT: '{}'", root_str);
 
     let filters = [
         (ui_test::Match::PathBackslash, b"/".to_vec()),
@@ -130,6 +132,8 @@ fn config<'a>(
     }
 
     config.with_args(args);
+
+    println!("[DEBUG - ui_test] config: {:#?}", config);
     config
 }
 
