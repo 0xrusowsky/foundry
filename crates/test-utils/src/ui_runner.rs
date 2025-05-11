@@ -133,6 +133,7 @@ fn config<'a>(
 
     config.with_args(args);
 
+    // DEBUG
     println!("[DEBUG - ui_test] config: {:#?}", config);
     config
 }
