@@ -108,7 +108,9 @@ fn config<'a>(
         (ui_test::Match::Exact(vec![b'\r']), b"".to_vec()),
         #[cfg(windows)]
         (ui_test::Match::Exact(br"\\?\".to_vec()), b"".to_vec()),
-        (root.into(), b"ROOT".to_vec()),
+        (ui_test::Match::Exact(root_str.into_bytes()), b"ROOT".to_vec()),
+        #[cfg(windows)]
+        (ui_test::Match::Exact(b"//".to_vec()), b"/".to_vec()),
     ];
     config.comment_defaults.base().normalize_stderr.extend(filters.iter().cloned());
     config.comment_defaults.base().normalize_stdout.extend(filters);
