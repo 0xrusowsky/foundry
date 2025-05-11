@@ -97,7 +97,8 @@ fn config<'a>(
         Spanned::dummy(ui_test::diagnostics::Level::Warn).into();
 
     // normalize windows paths
-    let root_str = root.to_string_lossy().into_owned();
+    #[allow(unused_mut)]
+    let mut root_str = root.to_string_lossy().into_owned();
     #[cfg(windows)]
     {
         root_str = root_str.replace('\\', "/");
