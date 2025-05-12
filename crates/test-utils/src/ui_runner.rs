@@ -99,8 +99,6 @@ fn config<'a>(
     // DEBUG
     let root_str = root.to_string_lossy();
     println!("[DEBUG - ui_test] Raw ROOT: '{}'", root_str);
-    let root_str = root_str.replace('\\', "/");
-    println!("[DEBUG - ui_test] Normalized ROOT: '{}'", root_str);
 
     let filters = [
         (ui_test::Match::PathBackslash, b"/".to_vec()),
@@ -108,9 +106,7 @@ fn config<'a>(
         (ui_test::Match::Exact(vec![b'\r']), b"".to_vec()),
         #[cfg(windows)]
         (ui_test::Match::Exact(br"\\?\".to_vec()), b"".to_vec()),
-        (ui_test::Match::Exact(root_str.into_bytes()), b"ROOT".to_vec()),
-        #[cfg(windows)]
-        (ui_test::Match::Exact(b"//".to_vec()), b"/".to_vec()),
+        (root.into(), b"ROOT".to_vec()),
     ];
     config.comment_defaults.base().normalize_stderr.extend(filters.iter().cloned());
     config.comment_defaults.base().normalize_stdout.extend(filters);
