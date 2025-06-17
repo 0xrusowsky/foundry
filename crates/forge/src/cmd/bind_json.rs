@@ -281,22 +281,30 @@ impl PreprocessedState {
             for (path, source) in &input.input.sources {
                 if !include.is_empty() {
                     if !include.iter().any(|matcher| matcher.is_match(path)) {
+                        sh_println!("[EXCLUDE] {}", path.to_string_lossy())
+                            .expect("unable to print path");
                         continue;
                     }
                 } else {
                     // Exclude library files by default
                     if project.paths.has_library_ancestor(path) {
+                        sh_println!("[EXCLUDE] {}", path.to_string_lossy())
+                            .expect("unable to print path");
                         continue;
                     }
                 }
 
                 if exclude.iter().any(|matcher| matcher.is_match(path)) {
+                    sh_println!("[EXCLUDE] {}", path.to_string_lossy())
+                        .expect("unable to print path");
                     continue;
                 }
 
                 if let Ok(src_file) =
                     sess.source_map().new_source_file(path.clone(), source.content.as_str())
                 {
+                    sh_println!("[INCLUDE] {}", path.to_string_lossy())
+                        .expect("unable to print path");
                     target_files.insert(src_file.stable_id);
                     parsing_context.add_file(src_file);
                 }
