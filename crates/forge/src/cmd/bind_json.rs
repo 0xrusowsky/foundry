@@ -317,7 +317,8 @@ impl PreprocessedState {
                 sh_println!("[DEBUG] HIR successful!").unwrap();
                 let hir = &gcx.get().hir;
                 sh_println!("[DEBUG] {hir:#?}").unwrap();
-                sh_println!("[DEBUG] hir structs: {:#?}", hir.strukt_ids().collect()).unwrap();
+                sh_println!("[DEBUG] hir structs: {:#?}", hir.strukt_ids().collect::<Vec<_>>())
+                    .unwrap();
                 let resolver = Resolver::new(gcx);
                 for id in &resolver.struct_ids() {
                     sh_println!("[DEBUG - {id:?}] {}", hir.strukt(*id).name).unwrap();
