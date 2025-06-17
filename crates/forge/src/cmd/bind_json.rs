@@ -316,15 +316,18 @@ impl PreprocessedState {
                 let hir = &gcx.get().hir;
                 let resolver = Resolver::new(gcx);
                 for id in &resolver.struct_ids() {
+                    sh_println!("[DEBUG - {id:?}] {}", hir.strukt(*id).name).unwrap();
                     if let Some(schema) = resolver.resolve_struct_eip712(*id) {
                         let def = hir.strukt(*id);
                         let source = hir.source(def.source);
 
                         if !target_files.contains(&source.file.stable_id) {
+                            sh_println!("[EXCLUDED] {}", &source.file.name.display()).unwrap();
                             continue;
                         }
 
                         if let FileName::Real(ref path) = source.file.name {
+                            sh_println!("[WRITE] to: {}", &source.file.name.display()).unwrap();
                             structs_to_write.push(StructToWrite {
                                 name: def.name.as_str().into(),
                                 contract_name: def
