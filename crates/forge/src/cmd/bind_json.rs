@@ -71,8 +71,12 @@ impl BindJsonArgs {
     fn preprocess(self) -> Result<PreprocessedState> {
         let config = self.load_config()?;
         let project = config.ephemeral_project()?;
+        sh_println!("[DEBUG]: {config:#?}\n").expect("Unable to print config");
+        sh_println!("[DEBUG]: {project:#?}\n").expect("Unable to print project");
 
         let target_path = config.root.join(self.out.as_ref().unwrap_or(&config.bind_json.out));
+        sh_println!("[DEBUG]: {target}\n", target = target_path.to_string_lossy())
+            .expect("Unable to print target path");
 
         let sources = project.paths.read_input_files()?;
         let graph = Graph::<MultiCompilerParsedSource>::resolve_sources(&project.paths, sources)?;
