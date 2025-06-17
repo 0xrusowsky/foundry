@@ -297,9 +297,9 @@ impl PreprocessedState {
             if let Ok(Some(gcx)) = parsing_context.parse_and_lower(&hir_arena) {
                 let resolver = Resolver::new(gcx);
                 let hir = resolver.hir();
-                for id in &resolver.struct_ids() {
-                    if let Some(schema) = resolver.resolve_struct_eip712(*id) {
-                        let def = hir.strukt(*id);
+                for id in resolver.struct_ids() {
+                    if let Some(schema) = resolver.resolve_struct_eip712(id) {
+                        let def = hir.strukt(id);
                         let source = hir.source(def.source);
 
                         if !target_files.contains(&source.file.stable_id) {
