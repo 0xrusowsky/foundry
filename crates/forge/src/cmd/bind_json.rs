@@ -312,7 +312,9 @@ impl PreprocessedState {
 
             // Parse and resolve
             let hir_arena = ThreadLocal::new();
+            sh_println!("[DEBUG] Attempting to get HIR").unwrap();
             if let Ok(Some(gcx)) = parsing_context.parse_and_lower(&hir_arena) {
+                sh_println!("[DEBUG] HIR successful").unwrap();
                 let hir = &gcx.get().hir;
                 let resolver = Resolver::new(gcx);
                 for id in &resolver.struct_ids() {
