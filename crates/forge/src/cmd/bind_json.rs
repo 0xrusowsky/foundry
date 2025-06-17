@@ -71,12 +71,12 @@ impl BindJsonArgs {
     fn preprocess(self) -> Result<PreprocessedState> {
         let config = self.load_config()?;
         let project = config.ephemeral_project()?;
-        sh_println!("[DEBUG]: {config:#?}\n").expect("Unable to print config");
-        sh_println!("[DEBUG]: {project:#?}\n").expect("Unable to print project");
+        // sh_println!("[DEBUG]: {config:#?}\n").expect("Unable to print config");
+        // sh_println!("[DEBUG]: {project:#?}\n").expect("Unable to print project");
 
         let target_path = config.root.join(self.out.as_ref().unwrap_or(&config.bind_json.out));
-        sh_println!("[DEBUG]: {target}\n", target = target_path.to_string_lossy())
-            .expect("Unable to print target path");
+        // sh_println!("[DEBUG]: {target}\n", target = target_path.to_string_lossy())
+        //     .expect("Unable to print target path");
 
         let sources = project.paths.read_input_files()?;
         let graph = Graph::<MultiCompilerParsedSource>::resolve_sources(&project.paths, sources)?;
@@ -95,6 +95,12 @@ impl BindJsonArgs {
             // For now, we are always picking the latest version.
             .max_by(|(v1, _, _), (v2, _, _)| v1.cmp(v2))
             .unwrap();
+        sh_println!("[DEBUG]: {version:?}").expect("unable to print version");
+        sh_println!(
+            "[DEBUG]: {:#?}",
+            sources.keys().map(|k| k.to_string_lossy()).collect::<Vec<_>>()
+        )
+        .expect("unable to print sources");
 
         let sess = Session::builder().with_stderr_emitter().build();
         let result = sess.enter_parallel(|| -> solar_parse::interface::Result<()> {
