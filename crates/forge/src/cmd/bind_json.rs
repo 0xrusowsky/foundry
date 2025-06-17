@@ -71,12 +71,8 @@ impl BindJsonArgs {
     fn preprocess(self) -> Result<PreprocessedState> {
         let config = self.load_config()?;
         let project = config.ephemeral_project()?;
-        // sh_println!("[DEBUG]: {config:#?}\n").expect("Unable to print config");
-        // sh_println!("[DEBUG]: {project:#?}\n").expect("Unable to print project");
 
         let target_path = config.root.join(self.out.as_ref().unwrap_or(&config.bind_json.out));
-        // sh_println!("[DEBUG]: {target}\n", target = target_path.to_string_lossy())
-        //     .expect("Unable to print target path");
 
         let sources = project.paths.read_input_files()?;
         let graph = Graph::<MultiCompilerParsedSource>::resolve_sources(&project.paths, sources)?;
@@ -95,12 +91,6 @@ impl BindJsonArgs {
             // For now, we are always picking the latest version.
             .max_by(|(v1, _, _), (v2, _, _)| v1.cmp(v2))
             .unwrap();
-        sh_println!("[DEBUG]: {version:?}").expect("unable to print version");
-        sh_println!(
-            "[DEBUG]: {:#?}",
-            sources.keys().map(|k| k.to_string_lossy()).collect::<Vec<_>>()
-        )
-        .expect("unable to print sources");
 
         let sess = Session::builder().with_stderr_emitter().build();
         let result = sess.enter_parallel(|| -> solar_parse::interface::Result<()> {
@@ -281,30 +271,22 @@ impl PreprocessedState {
             for (path, source) in &input.input.sources {
                 if !include.is_empty() {
                     if !include.iter().any(|matcher| matcher.is_match(path)) {
-                        sh_println!("[EXCLUDE] {}", path.to_string_lossy())
-                            .expect("unable to print path");
                         continue;
                     }
                 } else {
                     // Exclude library files by default
                     if project.paths.has_library_ancestor(path) {
-                        sh_println!("[EXCLUDE] {}", path.to_string_lossy())
-                            .expect("unable to print path");
                         continue;
                     }
                 }
 
                 if exclude.iter().any(|matcher| matcher.is_match(path)) {
-                    sh_println!("[EXCLUDE] {}", path.to_string_lossy())
-                        .expect("unable to print path");
                     continue;
                 }
 
                 if let Ok(src_file) =
                     sess.source_map().new_source_file(path.clone(), source.content.as_str())
                 {
-                    sh_println!("[INCLUDE] {}", path.to_string_lossy())
-                        .expect("unable to print path");
                     target_files.insert(src_file.stable_id);
                     parsing_context.add_file(src_file);
                 }
@@ -312,16 +294,10 @@ impl PreprocessedState {
 
             // Parse and resolve
             let hir_arena = ThreadLocal::new();
-            sh_println!("[DEBUG] Attempting to get HIR").unwrap();
             if let Ok(Some(gcx)) = parsing_context.parse_and_lower(&hir_arena) {
-                sh_println!("[DEBUG] HIR successful!").unwrap();
                 let resolver = Resolver::new(gcx);
                 let hir = resolver.hir();
-                sh_println!("[DEBUG] {hir:#?}").unwrap();
-                sh_println!("[DEBUG] hir structs: {:#?}", hir.strukt_ids().collect::<Vec<_>>())
-                    .unwrap();
                 for id in resolver.struct_ids() {
-                    sh_println!("[DEBUG - {id:?}] {}", hir.strukt(id).name).unwrap();
                     if let Some(schema) = resolver.resolve_struct_eip712(id) {
                         let def = hir.strukt(id);
                         let source = hir.source(def.source);
@@ -331,7 +307,6 @@ impl PreprocessedState {
                         }
 
                         if let FileName::Real(ref path) = source.file.name {
-                            sh_println!("[WRITE] to: {}", &source.file.name.display()).unwrap();
                             structs_to_write.push(StructToWrite {
                                 name: def.name.as_str().into(),
                                 contract_name: def

@@ -70,6 +70,7 @@ impl<'hir> Resolver<'hir> {
         Self { hir, gcx }
     }
 
+    /// Returns a reference to the [`Hir`].
     pub fn hir(&self) -> &'hir Hir<'hir> {
         &self.hir
     }
