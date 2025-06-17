@@ -315,19 +315,18 @@ impl PreprocessedState {
             sh_println!("[DEBUG] Attempting to get HIR").unwrap();
             if let Ok(Some(gcx)) = parsing_context.parse_and_lower(&hir_arena) {
                 sh_println!("[DEBUG] HIR successful!").unwrap();
-                let hir = &gcx.get().hir;
+                let resolver = Resolver::new(gcx);
+                let hir = resolver.hir();
                 sh_println!("[DEBUG] {hir:#?}").unwrap();
                 sh_println!("[DEBUG] hir structs: {:#?}", hir.strukt_ids().collect::<Vec<_>>())
                     .unwrap();
-                let resolver = Resolver::new(gcx);
-                for id in &resolver.struct_ids() {
-                    sh_println!("[DEBUG - {id:?}] {}", hir.strukt(*id).name).unwrap();
-                    if let Some(schema) = resolver.resolve_struct_eip712(*id) {
-                        let def = hir.strukt(*id);
+                for id in resolver.struct_ids() {
+                    sh_println!("[DEBUG - {id:?}] {}", hir.strukt(id).name).unwrap();
+                    if let Some(schema) = resolver.resolve_struct_eip712(id) {
+                        let def = hir.strukt(id);
                         let source = hir.source(def.source);
 
                         if !target_files.contains(&source.file.stable_id) {
-                            sh_println!("[EXCLUDED] {}", &source.file.name.display()).unwrap();
                             continue;
                         }
 

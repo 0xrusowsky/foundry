@@ -37,8 +37,8 @@ impl Eip712Args {
             let hir_arena = ThreadLocal::new();
             if let Ok(Some(gcx)) = parsing_context.parse_and_lower(&hir_arena) {
                 let resolver = Resolver::new(gcx);
-                for id in &resolver.struct_ids() {
-                    if let Some(resolved) = resolver.resolve_struct_eip712(*id) {
+                for id in resolver.struct_ids() {
+                    if let Some(resolved) = resolver.resolve_struct_eip712(id) {
                         _ = sh_println!("{resolved}\n");
                     }
                 }
@@ -64,12 +64,19 @@ pub struct Resolver<'hir> {
 impl<'hir> Resolver<'hir> {
     /// Constructs a new [`Resolver`] for the supplied [`Hir`] instance.
     pub fn new(gcx: GcxWrapper<'hir>) -> Self {
-        Self { hir: &gcx.get().hir, gcx }
+        let hir = &gcx.get().hir;
+        sh_println!("[DEBUG - RESOLVER] {hir:#?}").unwrap();
+
+        Self { hir, gcx }
+    }
+
+    pub fn hir(&self) -> &'hir Hir<'hir> {
+        &self.hir
     }
 
     /// Returns the [`StructId`]s of every user-defined struct in source order.
-    pub fn struct_ids(&self) -> Vec<StructId> {
-        self.hir.strukt_ids().collect()
+    pub fn struct_ids(&self) -> impl ExactSizeIterator<Item = StructId> {
+        self.hir.strukt_ids()
     }
 
     /// Converts a given struct into its EIP-712 `encodeType` representation.
